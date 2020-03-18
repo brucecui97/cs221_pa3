@@ -35,6 +35,7 @@ private:
 	* @param lr is (x,y) of the lower right corner of the rectangle */
 	long getSumSq(char channel, pair<int,int> ul, pair<int,int> lr);
 
+
 public:
 
 	// initialize the private vectors so that, for each color,  entry 
