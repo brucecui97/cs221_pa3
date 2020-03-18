@@ -6,6 +6,7 @@
 #include "cs221util/RGBAPixel.h"
 #include <utility>
 #include <vector>
+#include<cmath>
 using namespace std;
 using namespace cs221util;
 
