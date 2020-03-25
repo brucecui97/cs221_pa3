@@ -27,7 +27,7 @@ using namespace cs221util;
  */
 
 class twoDtree {
-private:
+public:
 
    /**
     * The Node class is private to the tree class via the principle of
@@ -129,6 +129,7 @@ public:
     */
    PNG render();
 
+   void render_helper(PNG& img, twoDtree::Node* root);
    /*
     *  Prune function trims subtrees as high as possible in the tree.
     *  A subtree is pruned (cleared) if all of its leaves are within 
