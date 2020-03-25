@@ -45,22 +45,28 @@ twoDtree::twoDtree(PNG &imIn)
 	// YOUR CODE HERE
 	height = imIn.height();
 	width = imIn.width();
-	stats s(imIn); 
-	root = buildTree(s,pair<int,int>(0,0),pair<int,int>(imIn.width()-1,imIn.height()-1),true);
-	
+	stats s(imIn);
+	root = buildTree(s, pair<int, int>(0, 0), pair<int, int>(imIn.width() - 1, imIn.height() - 1), true);
 }
 
 twoDtree::Node *twoDtree::buildTree(stats &s, pair<int, int> ul, pair<int, int> lr, bool vert)
 {
 
 	// YOUR CODE HERE!!
+	// std::cout<<"new node created\n";
+	twoDtree::Node* res = new twoDtree::Node(ul,lr,s.getAvg(ul, lr));
 
-	twoDtree::Node *res;
-	res->avg = s.getAvg(ul, lr);
+	res->left = NULL;
+	res->right = NULL;
 
-	if (vert)
+	if (ul == lr)
 	{
-		if (ul.first - lr.first < 2)
+		return res;
+	}
+
+	else if (vert)
+	{
+		if (lr.first - ul.first<1)
 		{
 			res->left = buildTree(s, ul, lr, false);
 			res->right = buildTree(s, ul, lr, false);
@@ -71,6 +77,7 @@ twoDtree::Node *twoDtree::buildTree(stats &s, pair<int, int> ul, pair<int, int> 
 			double running_lowest_var = std::numeric_limits<double>::infinity();
 			for (int x = ul.first; x <= lr.first - 1; x++)
 			{
+
 				long left_score = s.getScore(ul, pair<int, int>(x, lr.second));
 				long right_score = s.getScore(pair<int, int>(x + 1, ul.second), lr);
 				if (left_score + right_score <= running_lowest_var)
@@ -79,6 +86,7 @@ twoDtree::Node *twoDtree::buildTree(stats &s, pair<int, int> ul, pair<int, int> 
 					running_lowest_var = left_score + right_score;
 				}
 			}
+
 			res->left = buildTree(s, ul, pair<int, int>(best_x_split, lr.second), false);
 			res->right = buildTree(s, pair<int, int>(best_x_split + 1, ul.second), lr, false);
 		}
@@ -87,7 +95,7 @@ twoDtree::Node *twoDtree::buildTree(stats &s, pair<int, int> ul, pair<int, int> 
 	else
 	{
 
-		if (lr.second - ul.second < 2)
+		if (lr.second - ul.second < 1)
 		{
 			res->left = buildTree(s, ul, lr, true);
 			res->right = buildTree(s, ul, lr, true);
@@ -115,14 +123,29 @@ twoDtree::Node *twoDtree::buildTree(stats &s, pair<int, int> ul, pair<int, int> 
 }
 
 void twoDtree::render_helper(PNG& img, twoDtree::Node* root){
+if (root==NULL){
+	return;
+}
 
-	
+if (root->left==NULL && root->right == NULL){
+	img.getPixel(root->upLeft.first,root->upLeft.second)->r = root->avg.r;
+	img.getPixel(root->upLeft.first,root->upLeft.second)->g = root->avg.g;
+	img.getPixel(root->upLeft.first,root->upLeft.second)->b = root->avg.b;
+	img.getPixel(root->upLeft.first,root->upLeft.second)->a = root->avg.a;
+}
+render_helper(img,root->left);
+render_helper(img,root->right);
+
+
+
 }
 PNG twoDtree::render()
 {
 
 	// YOUR CODE HERE!!
 	PNG res(width,height);
+	render_helper(res,root);
+	return res;
 
 }
 

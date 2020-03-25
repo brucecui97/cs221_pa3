@@ -148,6 +148,9 @@ long stats::getSumSq(char channel, pair<int, int> ul, pair<int, int> lr)
 
     else if (channel == 'g')
     {
+        // std::cout << sumsqRed.size() << std::endl;
+        // std::cout << sumsqGreen.size() << std::endl;
+        // std::cout << sumsqBlue.size() << std::endl;
         long res = sumsqGreen.at(lr.second).at(lr.first);
 
         if (ul.second - 1 >= 0)
@@ -206,10 +209,12 @@ long stats::getScore(pair<int, int> ul, pair<int, int> lr)
     // std::cout << getSum('g', ul, lr) << std::endl;
     // std::cout << getSum('b', ul, lr) << std::endl;
     // long rect_area = rectArea(ul, lr);
-
-    long red_score = getSumSq('r', ul, lr) -pow(getSum('r', ul, lr), 2) / rectArea(ul, lr);
-    long green_score = getSumSq('g', ul, lr) -pow(getSum('g', ul, lr), 2) / rectArea(ul, lr);
-    long blue_score = getSumSq('b', ul, lr) -pow(getSum('b', ul, lr), 2) / rectArea(ul, lr);
+    // std::cout << sumsqRed.size() << std::endl;
+    // std::cout << sumsqGreen.size() << std::endl;
+    // std::cout << sumsqBlue.size() << std::endl;
+    long red_score = getSumSq('r', ul, lr) - pow(getSum('r', ul, lr), 2) / rectArea(ul, lr);
+    long green_score = getSumSq('g', ul, lr) - pow(getSum('g', ul, lr), 2) / rectArea(ul, lr);
+    long blue_score = getSumSq('b', ul, lr) - pow(getSum('b', ul, lr), 2) / rectArea(ul, lr);
 
     // YOUR CODE HERE!!
     return red_score + green_score + blue_score;

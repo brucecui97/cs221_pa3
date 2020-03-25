@@ -12,7 +12,7 @@ using namespace cs221util;
 
 class stats {
 
-private:
+public:
 	vector< vector< long >> sumRed;
 	vector< vector< long >> sumGreen;
 	vector< vector< long >> sumBlue;
