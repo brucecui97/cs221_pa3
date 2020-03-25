@@ -175,6 +175,21 @@ void twoDtree::clear()
 
 void twoDtree::copy(const twoDtree &orig)
 {
+	height = orig.height;
+	width = orig.width;
+	root = copy_helper(orig.root);
 
-	// YOUR CODE HERE!!
+}
+
+twoDtree::Node* twoDtree::copy_helper(twoDtree::Node* node){
+	if (node==NULL){
+		return NULL;
+	}
+
+	twoDtree::Node* res = new twoDtree::Node(node->upLeft,node->lowRight,node->avg);
+	res->left = copy_helper(node->left);
+	res->right = copy_helper(node->right);
+	return res;
+
+
 }

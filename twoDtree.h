@@ -194,6 +194,8 @@ private:
    */
    void copy(const twoDtree & other);
 
+   twoDtree::Node* copy_helper(twoDtree::Node* node);
+
    /**
    * Private helper function for the constructor. Recursively builds
    * the tree according to the specification of the constructor.
