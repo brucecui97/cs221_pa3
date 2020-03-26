@@ -143,7 +143,7 @@ public:
 
    twoDtree::Node* prune(int tol,twoDtree::Node* node);
 
-   int dist_leaves2root(twoDtree::Node* node,RGBAPixel&  rsf);
+   bool leaves_within_tol (twoDtree::Node* node,RGBAPixel&  rsf, int tol);
 
    /*
     * The pruneSize function takes a tolerance as input, and returns

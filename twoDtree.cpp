@@ -63,37 +63,39 @@ twoDtree::Node *twoDtree::buildTree(stats &s, pair<int, int> ul, pair<int, int> 
 
 	twoDtree::Node *res = new twoDtree::Node(ul, lr, s.getAvg(ul, lr));
 
-	res->left = NULL;
-	res->right = NULL;
-
 	if (ul == lr)
 	{
 		return res;
 	}
 
-	if (lr.first - ul.first < 1)
+	else if (lr.second == ul.second)
+	{
+		vert = true;
+	}
+
+	else if (lr.first == ul.first)
 	{
 		vert = false;
 	}
-
-	if (lr.second - ul.second < 1)
-		{
-			vert = true;
-		}
-
+	else
+	{
+		vert = vert;
+	}
 
 	if (vert)
 	{
+		// std::cout << "enter vert" << std::endl;
 		int best_x_split = ul.first;
-		double running_lowest_var = std::numeric_limits<double>::infinity();
+		long running_lowest_var = 2147483642;
 		for (int x = ul.first; x <= lr.first - 1; x++)
 		{
-
 			long left_score = s.getScore(ul, pair<int, int>(x, lr.second));
 			long right_score = s.getScore(pair<int, int>(x + 1, ul.second), lr);
 			if (left_score + right_score <= running_lowest_var)
 			{
 				best_x_split = x;
+				// std::cout << "left score: " << left_score <<", right score:" << right_score <<std::endl;
+				// std::cout << "running_lowest_var: " << running_lowest_var <<", best_x_split:" << x <<std::endl;
 				running_lowest_var = left_score + right_score;
 			}
 		}
@@ -104,22 +106,25 @@ twoDtree::Node *twoDtree::buildTree(stats &s, pair<int, int> ul, pair<int, int> 
 
 	else
 	{
+		// std::cout << "enter horizontal" << std::endl;
 		int best_y_split = ul.second;
-		double running_lowest_var = std::numeric_limits<double>::infinity();
+		long running_lowest_var2 = 2147483642;
 		for (int y = ul.second; y <= lr.second - 1; y++)
 		{
 			long top_score = s.getScore(ul, pair<int, int>(lr.first, y));
 			long bot_score = s.getScore(pair<int, int>(ul.first, y + 1), lr);
-			if (top_score + bot_score <= running_lowest_var)
+			if (top_score + bot_score <= running_lowest_var2)
 			{
 				best_y_split = y;
-				running_lowest_var = top_score + bot_score;
+				// std::cout << "top_score: " << top_score <<", bot_score :" << bot_score <<std::endl;
+				// std::cout << "running_lowest_var: " << running_lowest_var2 <<", best_y_split:" << y <<std::endl;
+				running_lowest_var2 = top_score + bot_score;
 			}
 		}
 		res->left = buildTree(s, ul, pair<int, int>(lr.first, best_y_split), true);
 		res->right = buildTree(s, pair<int, int>(ul.first, best_y_split + 1), lr, true);
 	}
-	
+
 	return res;
 }
 
@@ -132,10 +137,16 @@ void twoDtree::render_helper(PNG &img, twoDtree::Node *root)
 
 	if (root->left == NULL && root->right == NULL)
 	{
-		img.getPixel(root->upLeft.first, root->upLeft.second)->r = root->avg.r;
-		img.getPixel(root->upLeft.first, root->upLeft.second)->g = root->avg.g;
-		img.getPixel(root->upLeft.first, root->upLeft.second)->b = root->avg.b;
-		img.getPixel(root->upLeft.first, root->upLeft.second)->a = root->avg.a;
+		for (int x = root->upLeft.first; x <= root->lowRight.first; x++)
+		{
+			for (int y = root->upLeft.second; y <= root->lowRight.second; y++)
+			{
+				img.getPixel(x, y)->r = root->avg.r;
+				img.getPixel(x, y)->g = root->avg.g;
+				img.getPixel(x, y)->b = root->avg.b;
+				img.getPixel(x, y)->a = root->avg.a;
+			}
+		}
 	}
 	render_helper(img, root->left);
 	render_helper(img, root->right);
@@ -163,7 +174,6 @@ int twoDtree::pruneSize(int tol)
 
 void twoDtree::prune(int tol)
 {
-
 	prune(tol, root);
 }
 
@@ -174,7 +184,11 @@ twoDtree::Node *twoDtree::prune(int tol, twoDtree::Node *node)
 		return NULL;
 	}
 
-	if (dist_leaves2root(node, node->avg) <= tol)
+	if (node->left == NULL && node->right == NULL)
+	{
+		return node;
+	}
+	if (leaves_within_tol(node, node->avg, tol))
 	{
 		node->left = NULL;
 		node->right = NULL;
@@ -187,18 +201,22 @@ twoDtree::Node *twoDtree::prune(int tol, twoDtree::Node *node)
 	return node;
 }
 
-int twoDtree::dist_leaves2root(twoDtree::Node *node, RGBAPixel &root_avg)
+bool twoDtree::leaves_within_tol(twoDtree::Node *node, RGBAPixel &root_avg, int tol)
 {
-	if (node == NULL)
+	if (node == NULL || node == nullptr)
 	{
-		return 0;
+		return true;
 	}
 
 	if (node->left == NULL && node->right == NULL)
 	{
-		return (root_avg.r - (node->avg.r)) * (root_avg.r - (node->avg.r)) + (root_avg.g - (node->avg.g)) * (root_avg.g - (node->avg.g)) + (root_avg.b - (node->avg.b)) * (root_avg.b - (node->avg.b));
+		long res1 = (root_avg.r - (node->avg.r)) * (root_avg.r - (node->avg.r));
+		long res2 = (root_avg.g - (node->avg.g)) * (root_avg.g - (node->avg.g));
+		long res3 = (root_avg.b - (node->avg.b)) * (root_avg.b - (node->avg.b));
+		return res1 + res2 + res3 <= tol;
 	}
-	return dist_leaves2root(node->left, root_avg) + dist_leaves2root(node->right, root_avg);
+
+	return (leaves_within_tol(node->left, root_avg, tol) && leaves_within_tol(node->right, root_avg, tol));
 }
 
 void twoDtree::clear()
