@@ -141,6 +141,10 @@ public:
     */
    void prune(int tol);
 
+   twoDtree::Node* prune(int tol,twoDtree::Node* node);
+
+   int dist_leaves2root(twoDtree::Node* node,RGBAPixel&  rsf);
+
    /*
     * The pruneSize function takes a tolerance as input, and returns
     * the number of leaves that would result _if_ the tree were to 
