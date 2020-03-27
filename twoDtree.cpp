@@ -162,15 +162,58 @@ PNG twoDtree::render()
 
 int twoDtree::idealPrune(int leaves)
 {
+	if (pruneSize(0)==leaves){
+		return 0;
+	}
+	int low = 0;
+	int high = 300000;
+	int target = leaves;
 
-	// YOUR CODE HERE!!
+				 //binary search loop
+				 while (low <= high)
+				 {
+					 int mid = (low + high) / 2;
+					 //check target against list[mid]
+					 if (target < pruneSize(mid)){
+						 high = mid - 1;
+					 }
+					 else if (target > pruneSize(mid)){
+						 low = mid + 1;
+					 }
+					 else{
+						return mid;
+					 }
+	
+				 }
+				 return -1;
+
+	
 }
 
 int twoDtree::pruneSize(int tol)
 {
-
-	// YOUR CODE HERE!!
+	int res = 0;
+	pruneSize_helper(root,tol,res);
+	return res;
+	
 }
+
+void twoDtree::pruneSize_helper(twoDtree::Node* node, int tol, int& res){
+	if (node==NULL){
+		return;
+	}
+	
+	if (leaves_within_tol(node->left,node->avg,tol) && leaves_within_tol(node->right,node->avg,tol)){
+		res++;
+	}
+	else{
+		pruneSize_helper(node->left,  tol, res);
+		pruneSize_helper(node->right, tol, res);
+	}
+
+}
+
+
 
 void twoDtree::prune(int tol)
 {
@@ -213,7 +256,7 @@ bool twoDtree::leaves_within_tol(twoDtree::Node *node, RGBAPixel &root_avg, int 
 		long res1 = (root_avg.r - (node->avg.r)) * (root_avg.r - (node->avg.r));
 		long res2 = (root_avg.g - (node->avg.g)) * (root_avg.g - (node->avg.g));
 		long res3 = (root_avg.b - (node->avg.b)) * (root_avg.b - (node->avg.b));
-		return res1 + res2 + res3 <= tol;
+		return res1 + res2 + res3<=tol;
 	}
 
 	return (leaves_within_tol(node->left, root_avg, tol) && leaves_within_tol(node->right, root_avg, tol));

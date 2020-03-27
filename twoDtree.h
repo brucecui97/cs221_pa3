@@ -156,6 +156,8 @@ public:
     */
    int pruneSize(int tol);
 
+   void pruneSize_helper(twoDtree::Node* node, int tol,int& res);
+
    /*
     * The idealPrune function can be considered to be the inverse
     * of the pruneSize function. It takes as input a number of leaves

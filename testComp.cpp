@@ -108,21 +108,21 @@ using namespace cs221util;
 
 // }
 
-TEST_CASE("twoDtree::basic prune", "[weight=1][part=twoDtree]")
-{
-    PNG img;
-    img.readFromFile("images/ada.png");
+// TEST_CASE("twoDtree::basic prune", "[weight=1][part=twoDtree]")
+// {
+//     PNG img;
+//     img.readFromFile("images/ada.png");
 
-    twoDtree t1(img);
-    t1.prune(3000);
-    PNG result = t1.render();
-    result.writeToFile("images/bruce_ada_prune.png");
+//     twoDtree t1(img);
+//     t1.prune(3000);
+//     PNG result = t1.render();
+//     result.writeToFile("images/bruce_ada_prune.png");
 
-    PNG expected;
-    expected.readFromFile("images/given-adaPrune.png");
+//     PNG expected;
+//     expected.readFromFile("images/given-adaPrune.png");
 
-    REQUIRE(expected == result);
-}
+//     REQUIRE(expected == result);
+// }
 
 // TEST_CASE("twoDtree::basic pruneSize","[weight=1][part=twoDtree]"){
 //     PNG img;
@@ -136,14 +136,14 @@ TEST_CASE("twoDtree::basic prune", "[weight=1][part=twoDtree]")
 //     REQUIRE(expected==result);
 // }
 
-// TEST_CASE("twoDtree::basic idealPrune","[weight=1][part=twoDtree]"){
-//     PNG img;
-//     img.readFromFile("images/ada.png");
+TEST_CASE("twoDtree::basic idealPrune","[weight=1][part=twoDtree]"){
+    PNG img;
+    img.readFromFile("images/ada.png");
 
-//     twoDtree t1(img);
-//     int result = t1.idealPrune(13904);
+    twoDtree t1(img);
+    int result = t1.idealPrune(13904);
 
-//     int expected = 2998;
+    int expected = 2998;
 
-//     REQUIRE(expected==result);
-// }
+    REQUIRE(expected==result);
+}
