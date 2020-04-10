@@ -168,6 +168,8 @@ public:
 
    int idealPrune (int leaves);
 
+   int binary_search(int lo,int hi,int target);
+
    /* =============== end of public PA3 FUNCTIONS =========================*/
 
 private:

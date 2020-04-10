@@ -159,25 +159,16 @@ PNG twoDtree::render()
 	render_helper(res, root);
 	return res;
 }
+int twoDtree::binary_search(int low,int high,int target){
 
-int twoDtree::idealPrune(int leaves)
-{
-	if (pruneSize(0)==leaves){
-		return 0;
-	}
-	int low = 0;
-	int high = 300000;
-	int target = leaves;
-
-				 //binary search loop
-				 while (low <= high)
+		 while (low <= high)
 				 {
 					 int mid = (low + high) / 2;
-					 //check target against list[mid]
-					 if (target < pruneSize(mid)){
+				
+					 if (target > pruneSize(mid)){
 						 high = mid - 1;
 					 }
-					 else if (target > pruneSize(mid)){
+					 else if (target < pruneSize(mid)){
 						 low = mid + 1;
 					 }
 					 else{
@@ -185,7 +176,54 @@ int twoDtree::idealPrune(int leaves)
 					 }
 	
 				 }
-				 return -1;
+		return -1;
+
+}
+int twoDtree::idealPrune(int leaves)
+{
+	if (pruneSize(0)==leaves){
+		return 0;
+	}
+	int low = 1;
+	int high = 300000;
+	int target = leaves;
+	int res = 300000;
+
+	while(binary_search(low,high,target)!=-1){
+		res = binary_search(low,high,target);
+		high = res-1;
+	}
+
+
+
+	// 			 while (low <= high)
+	// 			 {
+	// 				 int mid = (low + high) / 2;
+				
+	// 				 if (target < pruneSize(mid)){
+	// 					 high = mid - 1;
+	// 				 }
+	// 				 else if (target > pruneSize(mid)){
+	// 					 low = mid + 1;
+	// 				 }
+	// 				 else{
+	// 					prelim_result = mid;
+	// 				 }
+	
+	// 			 }
+
+	// int res = prelim_result;
+	// while(prelim_result>0){
+	// 	if (pruneSize(prelim_result-1)==target){
+	// 		prelim_result--;
+	// 		res = prelim_result;
+	// 	}
+	// 	else{
+	// 		break;
+	// 	}
+	// }
+
+	return res;
 
 	
 }
